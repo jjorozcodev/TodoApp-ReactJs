@@ -31,4 +31,17 @@ public class TaskController : ControllerBase
 
         return StatusCode(StatusCodes.Status200OK, "ok");
     }
+
+    [HttpDelete]
+    [Route("Remove/{id:int}")]
+    public async Task<IActionResult> Remove(int id) {
+        AppModel.Task? currentTask = _dbContext.Tasks.Where(t => t.Id == id).FirstOrDefault();
+        if (currentTask == null) {
+            return StatusCode(StatusCodes.Status404NotFound, "task not exists");
+        }
+        _dbContext.Tasks.Remove(currentTask);
+        await _dbContext.SaveChangesAsync();
+
+        return StatusCode(StatusCodes.Status200OK, "ok");
+    }
 }
