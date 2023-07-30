@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using TodoApp.Model;
+using AppModel = TodoApp.Model;
 
 namespace TodoApp.Controllers;
 
@@ -7,9 +7,9 @@ namespace TodoApp.Controllers;
 [ApiController]
 public class TaskController : ControllerBase
 {
-    private readonly TodoListDbContext _dbContext;
+    private readonly AppModel.TodoListDbContext _dbContext;
 
-    public TaskController(TodoListDbContext dbContext)
+    public TaskController(AppModel.TodoListDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -20,5 +20,15 @@ public class TaskController : ControllerBase
     {
         var list = _dbContext.Tasks.ToList();
         return StatusCode(StatusCodes.Status200OK, list);
+    }
+
+    [HttpPost]
+    [Route("Save")]
+    public async Task<IActionResult> Save([FromBody] AppModel.Task request)
+    {
+        await _dbContext.Tasks.AddAsync(request);
+        await _dbContext.SaveChangesAsync();
+
+        return StatusCode(StatusCodes.Status200OK, "ok");
     }
 }

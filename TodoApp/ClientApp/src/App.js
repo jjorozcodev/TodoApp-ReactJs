@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 const App = () => {
 
   const [tasks, setTasks] = useState([])
+  const [newTask, setNewTask] = useState("")
 
   const showTasks = async () => {
     const response = await fetch("api/task/list");
@@ -18,6 +19,24 @@ const App = () => {
     }
   }
 
+  const saveTask = async (e) => {
+    e.preventDefault()
+
+    const response = await fetch("api/task/save", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify({description: newTask})
+    })
+
+    if(response.ok)
+    {
+      setNewTask("");
+      await showTasks();
+    }
+  }
+
   useEffect(() => {
     showTasks();
   }, [])
@@ -28,7 +47,18 @@ const App = () => {
     <div className="container bg-dark p-4 vh-100">
       <h2 className="text-white">List of Tasks</h2>
       <div className="row">
-        <div className="col-sm-12"></div>
+        <div className="col-sm-12">
+          <form onSubmit={saveTask}>
+            <div class="input-group">
+              <input type="text" className="form-control"
+                placeholder="What are we going to do today?"
+                value={newTask}
+                onChange={(e) => setNewTask(e.target.value)}
+              />
+              <button type="submit" className="btn btn-success">Save!</button>
+            </div>
+          </form>
+        </div>
       </div>
       <div className="row mt-4">
         <div className="col-sm-12">
