@@ -6,12 +6,13 @@ const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_H
 
 const context = [
   "/weatherforecast",
+  "/api/task"
 ];
 
 const onError = (err, req, resp, target) => {
     console.error(`${err.message}`);
 }
-
+console.error(target);
 module.exports = function (app) {
   const appProxy = createProxyMiddleware(context, {
     proxyTimeout: 10000,
